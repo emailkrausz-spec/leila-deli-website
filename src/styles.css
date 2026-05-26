@@ -8,7 +8,8 @@
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 14px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -28,39 +29,41 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ink: var(--ink);
   --color-cream: var(--cream);
-  --color-ember: var(--ember);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
   --font-display: "Fraunces", Georgia, serif;
+  --font-script: "Allura", "Dancing Script", cursive;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-hebrew: "Frank Ruhl Libre", "David Libre", serif;
 }
 
 :root {
   --radius: 0.5rem;
-  /* Warm deli palette: cream paper, charcoal ink, ember accent */
-  --cream: oklch(0.975 0.012 75);
-  --ink: oklch(0.18 0.012 60);
-  --ember: oklch(0.62 0.18 38);
+  /* Logo palette: deep black, warm cream, olive/forest green */
+  --cream: oklch(0.965 0.018 85);
+  --leaf: oklch(0.58 0.11 142);       /* logo olive green */
+  --leaf-deep: oklch(0.42 0.10 142);
 
-  --background: var(--cream);
-  --foreground: var(--ink);
-  --card: oklch(0.99 0.008 80);
-  --card-foreground: var(--ink);
-  --popover: oklch(0.99 0.008 80);
-  --popover-foreground: var(--ink);
-  --primary: var(--ink);
-  --primary-foreground: var(--cream);
-  --secondary: oklch(0.93 0.015 70);
-  --secondary-foreground: var(--ink);
-  --muted: oklch(0.93 0.015 70);
-  --muted-foreground: oklch(0.45 0.015 60);
-  --accent: var(--ember);
-  --accent-foreground: var(--cream);
-  --destructive: oklch(0.55 0.22 27);
+  --background: oklch(0.115 0.005 60);    /* near-black */
+  --foreground: var(--cream);
+  --card: oklch(0.16 0.006 60);
+  --card-foreground: var(--cream);
+  --popover: oklch(0.16 0.006 60);
+  --popover-foreground: var(--cream);
+  --primary: var(--leaf);
+  --primary-foreground: oklch(0.10 0.005 60);
+  --secondary: oklch(0.22 0.008 60);
+  --secondary-foreground: var(--cream);
+  --muted: oklch(0.20 0.006 60);
+  --muted-foreground: oklch(0.70 0.015 80);
+  --accent: var(--leaf);
+  --accent-foreground: oklch(0.10 0.005 60);
+  --destructive: oklch(0.60 0.22 27);
   --destructive-foreground: var(--cream);
-  --border: oklch(0.88 0.013 70);
-  --input: oklch(0.88 0.013 70);
-  --ring: var(--ember);
+  --border: oklch(0.26 0.006 60);
+  --input: oklch(0.22 0.008 60);
+  --ring: var(--leaf);
 }
 
 @layer base {
@@ -70,7 +73,6 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 {
@@ -78,5 +80,18 @@
     font-weight: 500;
     letter-spacing: -0.02em;
   }
-  .font-hebrew { font-family: "Frank Ruhl Libre", "David Libre", serif; }
+  .font-hebrew { font-family: var(--font-hebrew); }
+  .font-script { font-family: var(--font-script); font-weight: 400; }
+}
+
+/* Subtle leaf divider used under section labels */
+.leaf-divider::before,
+.leaf-divider::after {
+  content: "";
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--color-leaf);
+  vertical-align: middle;
+  margin: 0 10px;
 }
