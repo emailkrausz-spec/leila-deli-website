@@ -1,14 +1,51 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import logo from "@/assets/logo.jpeg";
 import heroFood from "@/assets/hero-food.jpg";
-import dishMains from "@/assets/dish-mains.jpg";
-import dishSalads from "@/assets/dish-salads.jpg";
-import dishBurgers from "@/assets/dish-burgers.jpg";
 
-export const Route = createFileRoute("/")({
-  component: Index,
-});
+// Item images
+import imgClassicChickenBreast from "@/assets/items/classic-chicken-breast.jpg";
+import imgCrispySchnitzelPlate from "@/assets/items/crispy-schnitzel-plate.jpg";
+import imgGoldenChickenBites from "@/assets/items/golden-chicken-bites.jpg";
+import imgSweetSourWings from "@/assets/items/sweet-sour-wings.jpg";
+import imgSpicyChickenPoppers from "@/assets/items/spicy-chicken-poppers.jpg";
+import imgFlameGrilledChicken from "@/assets/items/flame-grilled-chicken.jpg";
+import imgCrispyChickenBites from "@/assets/items/crispy-chicken-bites.jpg";
+import imgSteamedRice from "@/assets/items/steamed-rice.jpg";
+import imgGardenRice from "@/assets/items/garden-rice.jpg";
+import imgCrispyOnionRings from "@/assets/items/crispy-onion-rings.jpg";
+import imgGoldenPotatoBites from "@/assets/items/golden-potato-bites.jpg";
+import imgSeasonedGreenBeans from "@/assets/items/seasoned-green-beans.jpg";
+import imgVegetableCigars from "@/assets/items/vegetable-cigars.jpg";
+import imgCreamyMashedPotatoes from "@/assets/items/creamy-mashed-potatoes.jpg";
+import imgRoastedPotatoSlices from "@/assets/items/roasted-potato-slices.jpg";
+import imgLeilaFries from "@/assets/items/leila-fries.jpg";
+import imgSavoryBeefRolls from "@/assets/items/savory-beef-rolls.jpg";
+import imgItalianPasta from "@/assets/items/italian-pasta.jpg";
+import imgGrilledChickenSalad from "@/assets/items/grilled-chicken-salad.jpg";
+import imgCrispySchnitzelSalad from "@/assets/items/crispy-schnitzel-salad.jpg";
+import imgGardenSalad from "@/assets/items/garden-salad.jpg";
+import imgLeilaHouseSalad from "@/assets/items/leila-house-salad.jpg";
+import imgBurgerBowl from "@/assets/items/burger-bowl.jpg";
+import imgClassicChickenSandwich from "@/assets/items/classic-chicken-sandwich.jpg";
+import imgCrispySchnitzelSandwich from "@/assets/items/crispy-schnitzel-sandwich.jpg";
+import imgGrilledChickenSandwich from "@/assets/items/grilled-chicken-sandwich.jpg";
+import imgHouseKebab from "@/assets/items/house-kebab.jpg";
+import imgSlowPulledBeef from "@/assets/items/slow-pulled-beef.jpg";
+import imgDeliPastrami from "@/assets/items/deli-pastrami.jpg";
+import imgShawarma from "@/assets/items/shawarma.jpg";
+import imgClassicHotDog from "@/assets/items/classic-hot-dog.jpg";
+import imgBeefFrank from "@/assets/items/beef-frank.jpg";
+import imgLeilaMix from "@/assets/items/leila-mix.jpg";
+import imgLeilaSignatureBurger from "@/assets/items/leila-signature-burger.jpg";
+import imgClassicBeefBurger from "@/assets/items/classic-beef-burger.jpg";
+import imgCrispyChickenBurger from "@/assets/items/crispy-chicken-burger.jpg";
+import imgHomestyleChickenSoup from "@/assets/items/homestyle-chicken-soup.jpg";
+import imgSoupOfTheDay from "@/assets/items/soup-of-the-day.jpg";
 
-type MenuItem = { name: string; he?: string };
+export const Route = createFileRoute("/")({ component: Index });
+
+type MenuItem = { id: string; name: string; price: number; img: string };
 type Section = { id: string; title: string; he: string; note?: string; items: MenuItem[] };
 
 const sections: Section[] = [
@@ -17,13 +54,13 @@ const sections: Section[] = [
     title: "Mains",
     he: "מנות עיקריות",
     items: [
-      { name: "Classic Chicken Breast" },
-      { name: "Crispy Schnitzel Plate" },
-      { name: "Golden Chicken Bites" },
-      { name: "Sweet & Sour Wings" },
-      { name: "Spicy Chicken Poppers" },
-      { name: "Flame-Grilled Chicken" },
-      { name: "Crispy Chicken Bites" },
+      { id: "classic-chicken-breast", name: "Classic Chicken Breast", price: 48, img: imgClassicChickenBreast },
+      { id: "crispy-schnitzel-plate", name: "Crispy Schnitzel Plate", price: 52, img: imgCrispySchnitzelPlate },
+      { id: "golden-chicken-bites", name: "Golden Chicken Bites", price: 42, img: imgGoldenChickenBites },
+      { id: "sweet-sour-wings", name: "Sweet & Sour Wings", price: 46, img: imgSweetSourWings },
+      { id: "spicy-chicken-poppers", name: "Spicy Chicken Poppers", price: 44, img: imgSpicyChickenPoppers },
+      { id: "flame-grilled-chicken", name: "Flame-Grilled Chicken", price: 54, img: imgFlameGrilledChicken },
+      { id: "crispy-chicken-bites", name: "Crispy Chicken Bites", price: 42, img: imgCrispyChickenBites },
     ],
   },
   {
@@ -31,17 +68,17 @@ const sections: Section[] = [
     title: "Sides",
     he: "תוספות",
     items: [
-      { name: "Steamed Rice" },
-      { name: "Garden Rice" },
-      { name: "Crispy Onion Rings" },
-      { name: "Golden Potato Bites" },
-      { name: "Seasoned Green Beans" },
-      { name: "Vegetable Cigars" },
-      { name: "Creamy Mashed Potatoes" },
-      { name: "Roasted Potato Slices" },
-      { name: "Leila Fries" },
-      { name: "Savory Beef Rolls" },
-      { name: "Italian Pasta" },
+      { id: "steamed-rice", name: "Steamed Rice", price: 14, img: imgSteamedRice },
+      { id: "garden-rice", name: "Garden Rice", price: 16, img: imgGardenRice },
+      { id: "crispy-onion-rings", name: "Crispy Onion Rings", price: 18, img: imgCrispyOnionRings },
+      { id: "golden-potato-bites", name: "Golden Potato Bites", price: 18, img: imgGoldenPotatoBites },
+      { id: "seasoned-green-beans", name: "Seasoned Green Beans", price: 18, img: imgSeasonedGreenBeans },
+      { id: "vegetable-cigars", name: "Vegetable Cigars", price: 20, img: imgVegetableCigars },
+      { id: "creamy-mashed-potatoes", name: "Creamy Mashed Potatoes", price: 16, img: imgCreamyMashedPotatoes },
+      { id: "roasted-potato-slices", name: "Roasted Potato Slices", price: 18, img: imgRoastedPotatoSlices },
+      { id: "leila-fries", name: "Leila Fries", price: 16, img: imgLeilaFries },
+      { id: "savory-beef-rolls", name: "Savory Beef Rolls", price: 24, img: imgSavoryBeefRolls },
+      { id: "italian-pasta", name: "Italian Pasta", price: 22, img: imgItalianPasta },
     ],
   },
   {
@@ -49,11 +86,11 @@ const sections: Section[] = [
     title: "Salads",
     he: "סלטים",
     items: [
-      { name: "Grilled Chicken Salad" },
-      { name: "Crispy Schnitzel Salad" },
-      { name: "Garden Salad" },
-      { name: "Leila House Salad" },
-      { name: "Burger Bowl" },
+      { id: "grilled-chicken-salad", name: "Grilled Chicken Salad", price: 48, img: imgGrilledChickenSalad },
+      { id: "crispy-schnitzel-salad", name: "Crispy Schnitzel Salad", price: 48, img: imgCrispySchnitzelSalad },
+      { id: "garden-salad", name: "Garden Salad", price: 32, img: imgGardenSalad },
+      { id: "leila-house-salad", name: "Leila House Salad", price: 38, img: imgLeilaHouseSalad },
+      { id: "burger-bowl", name: "Burger Bowl", price: 48, img: imgBurgerBowl },
     ],
   },
   {
@@ -62,16 +99,16 @@ const sections: Section[] = [
     he: "כריכים",
     note: "Choose: Laffa · Challah Roll · Baguette",
     items: [
-      { name: "Classic Chicken" },
-      { name: "Crispy Schnitzel" },
-      { name: "Grilled Chicken" },
-      { name: "House Kebab" },
-      { name: "Slow Pulled Beef" },
-      { name: "Deli Pastrami" },
-      { name: "Shawarma" },
-      { name: "Classic Hot Dog" },
-      { name: "Beef Frank" },
-      { name: "Leila Mix" },
+      { id: "sand-classic-chicken", name: "Classic Chicken", price: 42, img: imgClassicChickenSandwich },
+      { id: "sand-crispy-schnitzel", name: "Crispy Schnitzel", price: 44, img: imgCrispySchnitzelSandwich },
+      { id: "sand-grilled-chicken", name: "Grilled Chicken", price: 46, img: imgGrilledChickenSandwich },
+      { id: "sand-house-kebab", name: "House Kebab", price: 48, img: imgHouseKebab },
+      { id: "sand-slow-pulled-beef", name: "Slow Pulled Beef", price: 54, img: imgSlowPulledBeef },
+      { id: "sand-deli-pastrami", name: "Deli Pastrami", price: 52, img: imgDeliPastrami },
+      { id: "sand-shawarma", name: "Shawarma", price: 48, img: imgShawarma },
+      { id: "sand-classic-hot-dog", name: "Classic Hot Dog", price: 32, img: imgClassicHotDog },
+      { id: "sand-beef-frank", name: "Beef Frank", price: 38, img: imgBeefFrank },
+      { id: "sand-leila-mix", name: "Leila Mix", price: 58, img: imgLeilaMix },
     ],
   },
   {
@@ -79,9 +116,9 @@ const sections: Section[] = [
     title: "Burgers",
     he: "המבורגרים",
     items: [
-      { name: "Leila Signature Burger" },
-      { name: "Classic Beef Burger" },
-      { name: "Crispy Chicken Burger" },
+      { id: "leila-signature-burger", name: "Leila Signature Burger", price: 62, img: imgLeilaSignatureBurger },
+      { id: "classic-beef-burger", name: "Classic Beef Burger", price: 52, img: imgClassicBeefBurger },
+      { id: "crispy-chicken-burger", name: "Crispy Chicken Burger", price: 48, img: imgCrispyChickenBurger },
     ],
   },
   {
@@ -89,79 +126,98 @@ const sections: Section[] = [
     title: "Soups",
     he: "מרקים",
     items: [
-      { name: "Homestyle Chicken Soup" },
-      { name: "Soup of the Day" },
+      { id: "homestyle-chicken-soup", name: "Homestyle Chicken Soup", price: 28, img: imgHomestyleChickenSoup },
+      { id: "soup-of-the-day", name: "Soup of the Day", price: 26, img: imgSoupOfTheDay },
     ],
   },
 ];
 
-function Logo({ className = "" }: { className?: string }) {
+type CartLine = { item: MenuItem; qty: number };
+type OrderType = "delivery" | "pickup" | "eat-in";
+
+// ──────────────────────────────────────────────────────────────
+
+function Logo({ size = "md" }: { size?: "sm" | "md" }) {
+  const s = size === "sm" ? "h-9 w-9" : "h-11 w-11";
   return (
-    <a href="#top" className={`flex items-baseline gap-2 ${className}`}>
-      <span className="font-display text-2xl tracking-tight">Leila Deli</span>
-      <span className="font-hebrew text-sm text-muted-foreground" dir="rtl">לעילא דלי</span>
+    <a href="#top" className="flex items-center gap-3">
+      <img src={logo} alt="Leila Deli" className={`${s} rounded-full object-cover ring-1 ring-border`} width={64} height={64} />
+      <div className="leading-tight">
+        <div className="font-display text-xl tracking-tight text-foreground">
+          Leila <span className="font-script text-leaf">Deli</span>
+        </div>
+        <div className="font-hebrew text-[11px] text-muted-foreground" dir="rtl">לעילא דלי · טעימה עולמית</div>
+      </div>
     </a>
   );
 }
 
-function Nav() {
+function Nav({ cartCount, onOpenOrder }: { cartCount: number; onOpenOrder: () => void }) {
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
         <Logo />
         <nav className="hidden gap-8 text-sm text-muted-foreground md:flex">
-          <a href="#menu" className="hover:text-foreground">Menu</a>
-          <a href="#visit" className="hover:text-foreground">Visit</a>
-          <a href="#order" className="hover:text-foreground">Order</a>
+          <a href="#menu" className="transition hover:text-foreground">Menu</a>
+          <a href="#visit" className="transition hover:text-foreground">Visit</a>
         </nav>
-        <a
-          href="#order"
-          className="hidden rounded-full bg-foreground px-5 py-2 text-sm font-medium text-background transition hover:bg-foreground/90 md:inline-flex"
+        <button
+          onClick={onOpenOrder}
+          className="relative inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-leaf-deep"
         >
-          Order Online
-        </a>
+          Order
+          {cartCount > 0 && (
+            <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-background px-1.5 text-xs font-semibold text-leaf">
+              {cartCount}
+            </span>
+          )}
+        </button>
       </div>
     </header>
   );
 }
 
-function Hero() {
+function Hero({ onOrder }: { onOrder: () => void }) {
   return (
     <section id="top" className="relative overflow-hidden border-b border-border/60">
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-2 md:gap-12 md:py-28">
+      <div
+        className="absolute inset-0 opacity-30"
+        style={{ background: "radial-gradient(60% 60% at 70% 30%, oklch(0.58 0.11 142 / 0.25), transparent 70%)" }}
+      />
+      <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-16 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-28">
         <div className="flex flex-col justify-center">
-          <span className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Fast-Casual Deli
+          <span className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-leaf" /> Fast-Casual Deli
           </span>
           <h1 className="font-display text-5xl leading-[0.95] text-foreground md:text-7xl">
             Fresh.<br />Simple.<br />
-            <span className="italic text-accent">Done Right.</span>
+            <span className="font-script text-6xl text-leaf md:text-8xl">Done Right.</span>
           </h1>
           <p className="mt-6 max-w-md text-base text-muted-foreground md:text-lg">
-            Sandwiches, schnitzel, grilled chicken and burgers — made to order and built to travel well.
+            Sandwiches, schnitzel, grilled chicken and burgers — made to order. Delivery, pickup or dine in.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#menu" className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition hover:bg-foreground/90">
+            <a href="#menu" className="rounded-full bg-cream px-6 py-3 text-sm font-semibold text-background transition hover:bg-cream/90">
               View Menu
             </a>
-            <a href="#order" className="rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium text-foreground transition hover:border-foreground hover:bg-foreground hover:text-background">
+            <button onClick={onOrder} className="rounded-full border border-leaf px-6 py-3 text-sm font-semibold text-leaf transition hover:bg-leaf hover:text-primary-foreground">
               Order Online
-            </a>
+            </button>
           </div>
         </div>
         <div className="relative">
-          <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl">
+          <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/60 ring-1 ring-border">
             <img
               src={heroFood}
-              alt="Crispy schnitzel sandwich on fresh laffa with golden fries"
+              alt="Flame-grilled chicken on slate"
               width={1600}
               height={1280}
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="absolute -bottom-4 -left-4 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">Today</p>
-            <p className="font-display text-lg">Flame-Grilled Chicken</p>
+          <div className="absolute -bottom-5 -left-5 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block">
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Today</p>
+            <p className="font-display text-lg text-foreground">Flame-Grilled Chicken</p>
           </div>
         </div>
       </div>
@@ -171,13 +227,13 @@ function Hero() {
 
 function CategoryStrip() {
   return (
-    <div className="border-b border-border/60 bg-card/50">
+    <div className="sticky top-[68px] z-30 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-5 py-3 text-sm">
         {sections.map((s) => (
           <a
             key={s.id}
             href={`#${s.id}`}
-            className="whitespace-nowrap text-muted-foreground transition hover:text-foreground"
+            className="whitespace-nowrap text-muted-foreground transition hover:text-leaf"
           >
             {s.title}
           </a>
@@ -187,34 +243,51 @@ function CategoryStrip() {
   );
 }
 
-function MenuSection({ section, image }: { section: Section; image?: string }) {
+function MenuCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
   return (
-    <section id={section.id} className="scroll-mt-24 border-b border-border/60 py-16 md:py-24">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-leaf/60 hover:shadow-lg hover:shadow-black/40">
+      <div className="relative aspect-square overflow-hidden bg-muted">
+        <img
+          src={item.img}
+          alt={item.name}
+          loading="lazy"
+          width={800}
+          height={800}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+        />
+      </div>
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="font-display text-lg leading-tight text-foreground">{item.name}</h3>
+          <span className="shrink-0 font-display text-base tabular-nums text-leaf">₪{item.price}</span>
+        </div>
+        <button
+          onClick={onAdd}
+          className="mt-auto inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-background py-2 text-xs font-semibold uppercase tracking-wider text-foreground transition hover:border-leaf hover:bg-leaf hover:text-primary-foreground"
+        >
+          + Add
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function MenuSection({ section, onAdd }: { section: Section; onAdd: (item: MenuItem) => void }) {
+  return (
+    <section id={section.id} className="scroll-mt-32 border-b border-border/60 py-16 md:py-20">
       <div className="mx-auto max-w-6xl px-5">
-        <div className="grid gap-12 md:grid-cols-[1fr_2fr] md:gap-16">
-          <div>
-            <div className="md:sticky md:top-28">
-              <p className="font-hebrew text-sm text-muted-foreground" dir="rtl">{section.he}</p>
-              <h2 className="mt-1 font-display text-4xl text-foreground md:text-5xl">{section.title}</h2>
-              {section.note && (
-                <p className="mt-4 text-sm text-muted-foreground">{section.note}</p>
-              )}
-              {image && (
-                <div className="mt-8 hidden aspect-square overflow-hidden rounded-2xl md:block">
-                  <img src={image} alt={section.title} width={800} height={800} loading="lazy" className="h-full w-full object-cover" />
-                </div>
-              )}
-            </div>
+        <header className="mb-10 text-center">
+          <p className="font-hebrew text-sm text-leaf" dir="rtl">{section.he}</p>
+          <h2 className="mt-1 font-display text-4xl text-foreground md:text-5xl">{section.title}</h2>
+          <div className="mt-4 text-[11px] uppercase tracking-[0.25em] text-muted-foreground leaf-divider">
+            {section.items.length} items
           </div>
-          <ul className="divide-y divide-border">
-            {section.items.map((item) => (
-              <li key={item.name} className="group flex items-baseline justify-between gap-6 py-4">
-                <span className="font-display text-xl text-foreground md:text-2xl">{item.name}</span>
-                <span className="flex-1 translate-y-[-4px] border-b border-dashed border-border/70" />
-                <span className="text-sm tabular-nums text-muted-foreground">—</span>
-              </li>
-            ))}
-          </ul>
+          {section.note && <p className="mt-4 text-sm text-muted-foreground">{section.note}</p>}
+        </header>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
+          {section.items.map((item) => (
+            <MenuCard key={item.id} item={item} onAdd={() => onAdd(item)} />
+          ))}
         </div>
       </div>
     </section>
@@ -223,25 +296,25 @@ function MenuSection({ section, image }: { section: Section; image?: string }) {
 
 function Visit() {
   return (
-    <section id="visit" className="border-b border-border/60 bg-foreground py-20 text-background">
+    <section id="visit" className="border-b border-border/60 bg-card py-20">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 md:grid-cols-3">
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-background/60">Hours</p>
-          <ul className="mt-4 space-y-1 text-background/90">
-            <li className="flex justify-between"><span>Sun – Thu</span><span>11:00 — 22:00</span></li>
-            <li className="flex justify-between"><span>Friday</span><span>10:00 — 15:00</span></li>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Hours</p>
+          <ul className="mt-4 space-y-1 text-foreground/90">
+            <li className="flex justify-between"><span>Sun – Thu</span><span className="tabular-nums">11:00 — 22:00</span></li>
+            <li className="flex justify-between"><span>Friday</span><span className="tabular-nums">10:00 — 15:00</span></li>
             <li className="flex justify-between"><span>Saturday</span><span>Closed</span></li>
           </ul>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-background/60">Visit</p>
-          <p className="mt-4 font-display text-2xl">123 Main Street</p>
-          <p className="text-background/70">Tel Aviv, Israel</p>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Visit</p>
+          <p className="mt-4 font-display text-2xl text-foreground">123 Main Street</p>
+          <p className="text-muted-foreground">Tel Aviv, Israel</p>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.18em] text-background/60">Contact</p>
-          <p className="mt-4 text-background/90">+972 03 000 0000</p>
-          <p className="text-background/70">hello@leiladeli.com</p>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Contact</p>
+          <p className="mt-4 text-foreground/90">+972 03 000 0000</p>
+          <p className="text-muted-foreground">hello@leiladeli.com</p>
         </div>
       </div>
     </section>
@@ -252,46 +325,193 @@ function Footer() {
   return (
     <footer className="bg-background py-10">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 text-sm text-muted-foreground md:flex-row">
-        <Logo />
-        <p>© {new Date().getFullYear()} Leila Deli. All rights reserved.</p>
+        <Logo size="sm" />
+        <p>© {new Date().getFullYear()} Leila Deli · לעילא דלי</p>
       </div>
     </footer>
   );
 }
 
-function StickyOrder() {
+// ───────────────────────────── Order Drawer ─────────────────────────────
+
+function OrderDrawer({
+  open, onClose, cart, setCart, orderType, setOrderType,
+}: {
+  open: boolean;
+  onClose: () => void;
+  cart: CartLine[];
+  setCart: React.Dispatch<React.SetStateAction<CartLine[]>>;
+  orderType: OrderType;
+  setOrderType: (t: OrderType) => void;
+}) {
+  const total = cart.reduce((s, l) => s + l.item.price * l.qty, 0);
+  const deliveryFee = orderType === "delivery" && cart.length ? 15 : 0;
+
+  const changeQty = (id: string, d: number) =>
+    setCart((prev) =>
+      prev
+        .map((l) => (l.item.id === id ? { ...l, qty: l.qty + d } : l))
+        .filter((l) => l.qty > 0),
+    );
+
   return (
-    <a
-      id="order"
-      href="#order"
-      className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-accent-foreground shadow-xl shadow-foreground/20 transition hover:scale-[1.02] hover:bg-accent/90 md:bottom-8"
-    >
-      Order Now →
-    </a>
+    <>
+      <div
+        onClick={onClose}
+        className={`fixed inset-0 z-50 bg-black/70 backdrop-blur-sm transition-opacity ${
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+      <aside
+        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-border bg-background shadow-2xl transition-transform duration-300 ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
+        aria-hidden={!open}
+      >
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
+          <h3 className="font-display text-2xl text-foreground">Your Order</h3>
+          <button onClick={onClose} aria-label="Close" className="rounded-full p-2 text-muted-foreground hover:bg-card hover:text-foreground">✕</button>
+        </div>
+
+        {/* Order type tabs */}
+        <div className="border-b border-border px-5 pb-4 pt-4">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">How would you like it?</p>
+          <div className="grid grid-cols-3 gap-1 rounded-full border border-border bg-card p-1 text-xs font-semibold">
+            {([
+              { id: "delivery", label: "Delivery" },
+              { id: "pickup", label: "Pickup" },
+              { id: "eat-in", label: "Eat-In" },
+            ] as { id: OrderType; label: string }[]).map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setOrderType(t.id)}
+                className={`rounded-full py-2 transition ${
+                  orderType === t.id
+                    ? "bg-leaf text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            {orderType === "delivery" && "Delivered to your door in ~35 min."}
+            {orderType === "pickup" && "Ready for pickup in ~15 min."}
+            {orderType === "eat-in" && "We'll have a table ready when you arrive."}
+          </p>
+        </div>
+
+        {/* Items */}
+        <div className="flex-1 overflow-y-auto px-5 py-4">
+          {cart.length === 0 ? (
+            <div className="flex h-full flex-col items-center justify-center text-center text-muted-foreground">
+              <p className="font-display text-xl text-foreground">Your cart is empty</p>
+              <p className="mt-2 text-sm">Add items from the menu to get started.</p>
+            </div>
+          ) : (
+            <ul className="space-y-4">
+              {cart.map((line) => (
+                <li key={line.item.id} className="flex gap-3">
+                  <img src={line.item.img} alt="" width={64} height={64} className="h-16 w-16 shrink-0 rounded-lg object-cover" />
+                  <div className="flex flex-1 flex-col">
+                    <div className="flex justify-between gap-2">
+                      <span className="font-display text-base text-foreground">{line.item.name}</span>
+                      <span className="font-display tabular-nums text-leaf">₪{line.item.price * line.qty}</span>
+                    </div>
+                    <div className="mt-auto flex items-center gap-1.5 pt-2">
+                      <button onClick={() => changeQty(line.item.id, -1)} className="h-7 w-7 rounded-full border border-border text-foreground hover:border-leaf hover:text-leaf" aria-label="Decrease">–</button>
+                      <span className="w-6 text-center text-sm tabular-nums">{line.qty}</span>
+                      <button onClick={() => changeQty(line.item.id, 1)} className="h-7 w-7 rounded-full border border-border text-foreground hover:border-leaf hover:text-leaf" aria-label="Increase">+</button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Totals + CTA */}
+        <div className="border-t border-border px-5 py-5">
+          <dl className="space-y-1 text-sm">
+            <div className="flex justify-between text-muted-foreground">
+              <dt>Subtotal</dt>
+              <dd className="tabular-nums">₪{total}</dd>
+            </div>
+            {orderType === "delivery" && (
+              <div className="flex justify-between text-muted-foreground">
+                <dt>Delivery</dt>
+                <dd className="tabular-nums">₪{deliveryFee}</dd>
+              </div>
+            )}
+            <div className="flex justify-between pt-2 font-display text-lg text-foreground">
+              <dt>Total</dt>
+              <dd className="tabular-nums">₪{total + deliveryFee}</dd>
+            </div>
+          </dl>
+          <button
+            disabled={cart.length === 0}
+            className="mt-4 w-full rounded-full bg-leaf py-3 text-sm font-semibold text-primary-foreground transition hover:bg-leaf-deep disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
+          >
+            {orderType === "delivery" && "Checkout · Delivery"}
+            {orderType === "pickup" && "Checkout · Pickup"}
+            {orderType === "eat-in" && "Reserve Table"}
+          </button>
+        </div>
+      </aside>
+    </>
   );
 }
 
+// ──────────────────────────────────────────────────────────────
+
 function Index() {
-  const images: Record<string, string> = {
-    mains: dishMains,
-    salads: dishSalads,
-    burgers: dishBurgers,
+  const [cart, setCart] = useState<CartLine[]>([]);
+  const [orderType, setOrderType] = useState<OrderType>("delivery");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const addItem = (item: MenuItem) => {
+    setCart((prev) => {
+      const existing = prev.find((l) => l.item.id === item.id);
+      if (existing) return prev.map((l) => (l.item.id === item.id ? { ...l, qty: l.qty + 1 } : l));
+      return [...prev, { item, qty: 1 }];
+    });
+    setDrawerOpen(true);
   };
+
+  const cartCount = useMemo(() => cart.reduce((s, l) => s + l.qty, 0), [cart]);
+
   return (
     <div className="min-h-screen bg-background pb-24">
-      <Nav />
+      <Nav cartCount={cartCount} onOpenOrder={() => setDrawerOpen(true)} />
       <main>
-        <Hero />
+        <Hero onOrder={() => setDrawerOpen(true)} />
         <div id="menu">
           <CategoryStrip />
           {sections.map((s) => (
-            <MenuSection key={s.id} section={s} image={images[s.id]} />
+            <MenuSection key={s.id} section={s} onAdd={addItem} />
           ))}
         </div>
         <Visit />
       </main>
       <Footer />
-      <StickyOrder />
+
+      {/* Sticky floating order button (mobile-first) */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        className="fixed bottom-5 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-leaf px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-xl shadow-black/40 transition hover:scale-[1.02] hover:bg-leaf-deep md:bottom-8"
+      >
+        {cartCount > 0 ? `View Order · ${cartCount}` : "Order Now"} →
+      </button>
+
+      <OrderDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        cart={cart}
+        setCart={setCart}
+        orderType={orderType}
+        setOrderType={setOrderType}
+      />
     </div>
   );
 }
