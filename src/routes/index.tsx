@@ -319,32 +319,44 @@ function CategoryStrip() {
   );
 }
 
-function MenuCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
+function MenuCard({ item, onAdd, index }: { item: MenuItem; onAdd: () => void; index: number }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-leaf/60 hover:shadow-lg hover:shadow-black/40">
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay: (index % 8) * 0.05, ease: "easeOut" }}
+      whileHover={{ y: -6 }}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-leaf/60 hover:shadow-xl hover:shadow-black/50"
+    >
       <div className="relative aspect-square overflow-hidden bg-muted">
-        <img
+        <motion.img
           src={item.img}
           alt={item.name}
           loading="lazy"
           width={800}
           height={800}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover"
+          whileHover={{ scale: 1.12, rotate: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-baseline justify-between gap-3">
           <h3 className="font-display text-lg leading-tight text-foreground">{item.name}</h3>
           <span className="shrink-0 font-display text-base tabular-nums text-leaf">₪{item.price}</span>
         </div>
-        <button
+        <motion.button
           onClick={onAdd}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.95 }}
           className="mt-auto inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-background py-2 text-xs font-semibold uppercase tracking-wider text-foreground transition hover:border-leaf hover:bg-leaf hover:text-primary-foreground"
         >
           + Add
-        </button>
+        </motion.button>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -352,17 +364,23 @@ function MenuSection({ section, onAdd }: { section: Section; onAdd: (item: MenuI
   return (
     <section id={section.id} className="scroll-mt-32 border-b border-border/60 py-16 md:py-20">
       <div className="mx-auto max-w-6xl px-5">
-        <header className="mb-10 text-center">
+        <motion.header
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="mb-10 text-center"
+        >
           <p className="font-hebrew text-sm text-leaf" dir="rtl">{section.he}</p>
           <h2 className="mt-1 font-display text-4xl text-foreground md:text-5xl">{section.title}</h2>
           <div className="mt-4 text-[11px] uppercase tracking-[0.25em] text-muted-foreground leaf-divider">
             {section.items.length} items
           </div>
           {section.note && <p className="mt-4 text-sm text-muted-foreground">{section.note}</p>}
-        </header>
+        </motion.header>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
-          {section.items.map((item) => (
-            <MenuCard key={item.id} item={item} onAdd={() => onAdd(item)} />
+          {section.items.map((item, i) => (
+            <MenuCard key={item.id} item={item} onAdd={() => onAdd(item)} index={i} />
           ))}
         </div>
       </div>
