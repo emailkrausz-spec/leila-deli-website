@@ -155,25 +155,57 @@ function Logo({ size = "md" }: { size?: "sm" | "md" }) {
 }
 
 function Nav({ cartCount, onOpenOrder }: { cartCount: number; onOpenOrder: () => void }) {
+  const { t, lang, setLang, user, signOut } = useApp();
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
         <Logo />
         <nav className="hidden gap-8 text-sm text-muted-foreground md:flex">
-          <a href="#menu" className="transition hover:text-foreground">Menu</a>
-          <a href="#visit" className="transition hover:text-foreground">Visit</a>
+          <a href="#menu" className="transition hover:text-foreground">{t("menu")}</a>
+          <a href="#visit" className="transition hover:text-foreground">{t("visit")}</a>
         </nav>
-        <button
-          onClick={onOpenOrder}
-          className="relative inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-leaf-deep"
-        >
-          Order
-          {cartCount > 0 && (
-            <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-background px-1.5 text-xs font-semibold text-leaf">
-              {cartCount}
-            </span>
+        <div className="flex items-center gap-2">
+          {/* Language toggle */}
+          <div className="flex items-center rounded-full border border-border bg-card p-0.5 text-xs font-semibold">
+            <button
+              onClick={() => setLang("en")}
+              className={`rounded-full px-2.5 py-1 transition ${lang === "en" ? "bg-leaf text-primary-foreground" : "text-muted-foreground"}`}
+            >EN</button>
+            <button
+              onClick={() => setLang("he")}
+              className={`rounded-full px-2.5 py-1 transition ${lang === "he" ? "bg-leaf text-primary-foreground" : "text-muted-foreground"}`}
+            >עב</button>
+          </div>
+
+          {user ? (
+            <button
+              onClick={() => signOut()}
+              className="hidden rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-leaf hover:text-leaf sm:inline-flex"
+              title={user.email ?? ""}
+            >
+              {t("signOut")}
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="hidden rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-leaf hover:text-leaf sm:inline-flex"
+            >
+              {t("signIn")}
+            </Link>
           )}
-        </button>
+
+          <button
+            onClick={onOpenOrder}
+            className="relative inline-flex items-center gap-2 rounded-full bg-leaf px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-leaf-deep"
+          >
+            {t("order")}
+            {cartCount > 0 && (
+              <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-background px-1.5 text-xs font-semibold text-leaf">
+                {cartCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
