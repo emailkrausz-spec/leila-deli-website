@@ -179,35 +179,104 @@ function Nav({ cartCount, onOpenOrder }: { cartCount: number; onOpenOrder: () =>
 }
 
 function Hero({ onOrder }: { onOrder: () => void }) {
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 600], [0, 120]);
+  const heroScale = useTransform(scrollY, [0, 600], [1, 1.08]);
+  const textY = useTransform(scrollY, [0, 600], [0, -60]);
+
+  const letters = "Done Right.".split("");
+
   return (
     <section id="top" className="relative overflow-hidden border-b border-border/60">
-      <div
+      <motion.div
         className="absolute inset-0 opacity-30"
         style={{ background: "radial-gradient(60% 60% at 70% 30%, oklch(0.58 0.11 142 / 0.25), transparent 70%)" }}
+        animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.4, 0.25] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
       <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-16 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-28">
-        <div className="flex flex-col justify-center">
-          <span className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-leaf" /> Fast-Casual Deli
-          </span>
+        <motion.div className="flex flex-col justify-center" style={{ y: textY }}>
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <motion.span
+              className="h-1.5 w-1.5 rounded-full bg-leaf"
+              animate={{ scale: [1, 1.6, 1], opacity: [1, 0.5, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+            />
+            Fast-Casual Deli · Jerusalem
+          </motion.span>
           <h1 className="font-display text-5xl leading-[0.95] text-foreground md:text-7xl">
-            Fresh.<br />Simple.<br />
-            <span className="font-script text-6xl text-leaf md:text-8xl">Done Right.</span>
+            {["Fresh.", "Simple."].map((word, i) => (
+              <motion.span
+                key={word}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 + i * 0.15 }}
+                className="block"
+              >
+                {word}
+              </motion.span>
+            ))}
+            <span className="block font-script text-6xl text-leaf md:text-8xl">
+              {letters.map((ch, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 30, rotate: -8 }}
+                  animate={{ opacity: 1, y: 0, rotate: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + i * 0.05, type: "spring" }}
+                  className="inline-block"
+                >
+                  {ch === " " ? "\u00A0" : ch}
+                </motion.span>
+              ))}
+            </span>
           </h1>
-          <p className="mt-6 max-w-md text-base text-muted-foreground md:text-lg">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
+            className="mt-6 max-w-md text-base text-muted-foreground md:text-lg"
+          >
             Sandwiches, schnitzel, grilled chicken and burgers — made to order. Delivery, pickup or dine in.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#menu" className="rounded-full bg-cream px-6 py-3 text-sm font-semibold text-background transition hover:bg-cream/90">
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.3, duration: 0.5 }}
+            className="mt-8 flex flex-wrap gap-3"
+          >
+            <motion.a
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              href="#menu"
+              className="rounded-full bg-cream px-6 py-3 text-sm font-semibold text-background"
+            >
               View Menu
-            </a>
-            <button onClick={onOrder} className="rounded-full border border-leaf px-6 py-3 text-sm font-semibold text-leaf transition hover:bg-leaf hover:text-primary-foreground">
+            </motion.a>
+            <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={onOrder}
+              className="rounded-full border border-leaf px-6 py-3 text-sm font-semibold text-leaf transition hover:bg-leaf hover:text-primary-foreground"
+            >
               Order Online
-            </button>
-          </div>
-        </div>
-        <div className="relative">
-          <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/60 ring-1 ring-border">
+            </motion.button>
+          </motion.div>
+        </motion.div>
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+        >
+          <motion.div
+            style={{ y: heroY, scale: heroScale }}
+            className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/60 ring-1 ring-border"
+          >
             <img
               src={heroFood}
               alt="Flame-grilled chicken on slate"
@@ -215,12 +284,18 @@ function Hero({ onOrder }: { onOrder: () => void }) {
               height={1280}
               className="h-full w-full object-cover"
             />
-          </div>
-          <div className="absolute -bottom-5 -left-5 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block">
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -20, y: 20 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
+            whileHover={{ y: -4, rotate: -2 }}
+            className="absolute -bottom-5 -left-5 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block"
+          >
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Today</p>
             <p className="font-display text-lg text-foreground">Flame-Grilled Chicken</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
