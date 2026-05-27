@@ -211,13 +211,28 @@ function Nav({ cartCount, onOpenOrder }: { cartCount: number; onOpenOrder: () =>
   );
 }
 
+const heroRotation = [
+  { img: heroFood, label: { en: "Flame-Grilled Chicken", he: "עוף בגריל" } },
+  { img: imgLeilaSignatureBurger, label: { en: "Leila Signature Burger", he: "המבורגר חתימה" } },
+  { img: imgCrispySchnitzelPlate, label: { en: "Crispy Schnitzel Plate", he: "מנת שניצל" } },
+  { img: imgShawarma, label: { en: "Shawarma", he: "שווארמה" } },
+  { img: imgLeilaHouseSalad, label: { en: "Leila House Salad", he: "סלט הבית" } },
+  { img: imgHouseKebab, label: { en: "House Kebab", he: "קבב הבית" } },
+];
+
 function Hero({ onOrder }: { onOrder: () => void }) {
+  const { t, lang } = useApp();
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 600], [0, 120]);
-  const heroScale = useTransform(scrollY, [0, 600], [1, 1.08]);
   const textY = useTransform(scrollY, [0, 600], [0, -60]);
 
-  const letters = "Done Right.".split("");
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setSlide((s) => (s + 1) % heroRotation.length), 3500);
+    return () => clearInterval(id);
+  }, []);
+  const current = heroRotation[slide];
+  const doneRight = t("heroDoneRight");
 
   return (
     <section id="top" className="relative overflow-hidden border-b border-border/60">
@@ -240,12 +255,12 @@ function Hero({ onOrder }: { onOrder: () => void }) {
               animate={{ scale: [1, 1.6, 1], opacity: [1, 0.5, 1] }}
               transition={{ duration: 1.8, repeat: Infinity }}
             />
-            Fast-Casual Deli · Jerusalem
+            {t("heroBadge")}
           </motion.span>
           <h1 className="font-display text-5xl leading-[0.95] text-foreground md:text-7xl">
-            {["Fresh.", "Simple."].map((word, i) => (
+            {[t("heroFresh"), t("heroSimple")].map((word, i) => (
               <motion.span
-                key={word}
+                key={word + i}
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 + i * 0.15 }}
@@ -254,8 +269,8 @@ function Hero({ onOrder }: { onOrder: () => void }) {
                 {word}
               </motion.span>
             ))}
-            <span className="block font-script text-6xl text-leaf md:text-8xl">
-              {letters.map((ch, i) => (
+            <span className={`block ${lang === "he" ? "font-hebrew" : "font-script"} text-6xl text-leaf md:text-8xl`}>
+              {doneRight.split("").map((ch, i) => (
                 <motion.span
                   key={i}
                   initial={{ opacity: 0, y: 30, rotate: -8 }}
@@ -274,7 +289,7 @@ function Hero({ onOrder }: { onOrder: () => void }) {
             transition={{ delay: 1.1, duration: 0.6 }}
             className="mt-6 max-w-md text-base text-muted-foreground md:text-lg"
           >
-            Sandwiches, schnitzel, grilled chicken and burgers — made to order. Delivery, pickup or dine in.
+            {t("heroSub")}
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -288,7 +303,7 @@ function Hero({ onOrder }: { onOrder: () => void }) {
               href="#menu"
               className="rounded-full bg-cream px-6 py-3 text-sm font-semibold text-background"
             >
-              View Menu
+              {t("viewMenu")}
             </motion.a>
             <motion.button
               whileHover={{ scale: 1.05, y: -2 }}
@@ -296,7 +311,7 @@ function Hero({ onOrder }: { onOrder: () => void }) {
               onClick={onOrder}
               className="rounded-full border border-leaf px-6 py-3 text-sm font-semibold text-leaf transition hover:bg-leaf hover:text-primary-foreground"
             >
-              Order Online
+              {t("orderOnline")}
             </motion.button>
           </motion.div>
         </motion.div>
@@ -307,27 +322,48 @@ function Hero({ onOrder }: { onOrder: () => void }) {
           transition={{ duration: 0.9, ease: "easeOut" }}
         >
           <motion.div
-            style={{ y: heroY, scale: heroScale }}
-            className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/60 ring-1 ring-border"
+            style={{ y: heroY }}
+            className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/60 ring-1 ring-border"
           >
-            <img
-              src={heroFood}
-              alt="Flame-grilled chicken on slate"
-              width={1600}
-              height={1280}
-              className="h-full w-full object-cover"
-            />
+            <AnimatePresence mode="sync">
+              <motion.img
+                key={slide}
+                src={current.img}
+                alt={current.label[lang]}
+                initial={{ opacity: 0, scale: 1.15, filter: "blur(12px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 0.95, filter: "blur(8px)" }}
+                transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </AnimatePresence>
+            {/* Slide indicators */}
+            <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+              {heroRotation.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSlide(i)}
+                  className={`h-1 rounded-full transition-all ${i === slide ? "w-6 bg-cream" : "w-1.5 bg-cream/40"}`}
+                  aria-label={`Slide ${i + 1}`}
+                />
+              ))}
+            </div>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: -20, y: 20 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ delay: 1, duration: 0.6 }}
-            whileHover={{ y: -4, rotate: -2 }}
-            className="absolute -bottom-5 -left-5 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block"
-          >
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Today</p>
-            <p className="font-display text-lg text-foreground">Flame-Grilled Chicken</p>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={slide}
+              initial={{ opacity: 0, x: -20, y: 10 }}
+              animate={{ opacity: 1, x: 0, y: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.5 }}
+              className="absolute -bottom-5 -left-5 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block"
+            >
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                {lang === "he" ? "עכשיו" : "Now serving"}
+              </p>
+              <p className="font-display text-lg text-foreground">{current.label[lang]}</p>
+            </motion.div>
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>
