@@ -715,6 +715,69 @@ function OrderDrawer({
 
 // ──────────────────────────────────────────────────────────────
 
+function WelcomePopup() {
+  const { t, lang, user } = useApp();
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (user) return;
+    if (typeof window === "undefined") return;
+    if (localStorage.getItem("leila-welcome-seen")) return;
+    const id = setTimeout(() => setOpen(true), 2500);
+    return () => clearTimeout(id);
+  }, [user]);
+  const dismiss = () => {
+    localStorage.setItem("leila-welcome-seen", "1");
+    setOpen(false);
+  };
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={dismiss}
+            className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 240, damping: 24 }}
+            className="fixed left-1/2 top-1/2 z-[61] w-[92%] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+            dir={lang === "he" ? "rtl" : "ltr"}
+          >
+            <div className="bg-leaf/15 p-6 text-center">
+              <p className="font-display text-4xl text-leaf">15% OFF</p>
+              <p className="mt-2 font-display text-xl text-foreground">{t("welcomeOffer")}</p>
+            </div>
+            <div className="p-6">
+              <h3 className="font-display text-2xl text-foreground">{t("welcomeTitle")}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{t("welcomeSub")}</p>
+              <div className="mt-5 flex flex-col gap-2">
+                <Link
+                  to="/signup"
+                  onClick={dismiss}
+                  className="rounded-full bg-leaf py-3 text-center text-sm font-semibold text-primary-foreground transition hover:bg-leaf-deep"
+                >
+                  {t("createAccount")}
+                </Link>
+                <button onClick={dismiss} className="text-xs text-muted-foreground hover:text-foreground">
+                  {t("noThanks")}
+                </button>
+              </div>
+            </div>
+            <button
+              onClick={dismiss}
+              aria-label="Close"
+              className="absolute right-3 top-3 rounded-full bg-background/60 p-1.5 text-muted-foreground hover:text-foreground"
+            >✕</button>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
 function Index() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [orderType, setOrderType] = useState<OrderType>("delivery");
