@@ -389,26 +389,113 @@ function MenuSection({ section, onAdd }: { section: Section; onAdd: (item: MenuI
 }
 
 function Visit() {
+  const hours = [
+    { day: "Sunday", time: "5:30 am – 12:00 am" },
+    { day: "Monday", time: "5:30 am – 12:00 am" },
+    { day: "Tuesday", time: "5:30 am – 12:00 am" },
+    { day: "Wednesday", time: "5:30 am – 12:00 am" },
+    { day: "Thursday", time: "11:30 am – 4:00 am" },
+    { day: "Friday", time: "Closed" },
+    { day: "Saturday", time: "Closed" },
+  ];
+  const todayIdx = new Date().getDay();
+
   return (
-    <section id="visit" className="border-b border-border/60 bg-card py-20">
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 md:grid-cols-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Hours</p>
-          <ul className="mt-4 space-y-1 text-foreground/90">
-            <li className="flex justify-between"><span>Sun – Thu</span><span className="tabular-nums">11:00 — 22:00</span></li>
-            <li className="flex justify-between"><span>Friday</span><span className="tabular-nums">10:00 — 15:00</span></li>
-            <li className="flex justify-between"><span>Saturday</span><span>Closed</span></li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Visit</p>
-          <p className="mt-4 font-display text-2xl text-foreground">123 Main Street</p>
-          <p className="text-muted-foreground">Tel Aviv, Israel</p>
-        </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Contact</p>
-          <p className="mt-4 text-foreground/90">+972 03 000 0000</p>
-          <p className="text-muted-foreground">hello@leiladeli.com</p>
+    <section id="visit" className="relative overflow-hidden border-b border-border/60 bg-card py-20">
+      <motion.div
+        className="absolute -right-32 top-0 h-96 w-96 rounded-full bg-leaf/10 blur-3xl"
+        animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <div className="relative mx-auto max-w-6xl px-5">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 text-center"
+        >
+          <p className="font-hebrew text-sm text-leaf" dir="rtl">בקרו אותנו</p>
+          <h2 className="mt-1 font-display text-4xl text-foreground md:text-5xl">Visit Leila Deli</h2>
+        </motion.div>
+
+        <div className="grid gap-8 md:grid-cols-[1.1fr_1fr]">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="overflow-hidden rounded-2xl border border-border shadow-2xl shadow-black/40"
+          >
+            <iframe
+              title="Leila Deli location"
+              src="https://www.google.com/maps?q=Eli+ha-Cohen+St+15,+Jerusalem&output=embed"
+              className="h-[420px] w-full"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="flex flex-col gap-8"
+          >
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Address</p>
+              <p className="mt-3 font-display text-2xl text-foreground">Eli ha-Cohen St 15</p>
+              <p className="text-muted-foreground">Jerusalem, Israel</p>
+              <motion.a
+                whileHover={{ x: 4 }}
+                href="https://www.google.com/maps/dir/?api=1&destination=Eli+ha-Cohen+St+15,+Jerusalem"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-leaf"
+              >
+                Get directions →
+              </motion.a>
+            </div>
+
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Hours</p>
+              <ul className="mt-3 divide-y divide-border/60 text-sm">
+                {hours.map((h, i) => {
+                  const isToday = i === todayIdx;
+                  const closed = h.time === "Closed";
+                  return (
+                    <motion.li
+                      key={h.day}
+                      initial={{ opacity: 0, x: 10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.04 }}
+                      className={`flex items-center justify-between py-2 ${isToday ? "text-foreground" : "text-muted-foreground"}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        {isToday && (
+                          <motion.span
+                            className="h-1.5 w-1.5 rounded-full bg-leaf"
+                            animate={{ scale: [1, 1.8, 1], opacity: [1, 0.4, 1] }}
+                            transition={{ duration: 1.6, repeat: Infinity }}
+                          />
+                        )}
+                        {h.day}
+                        {isToday && <span className="text-[10px] uppercase tracking-wider text-leaf">Today</span>}
+                      </span>
+                      <span className={`tabular-nums ${closed ? "text-destructive/80" : ""}`}>{h.time}</span>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Contact</p>
+              <p className="mt-3 text-foreground/90">hello@leiladeli.com</p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
