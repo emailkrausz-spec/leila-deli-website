@@ -840,6 +840,8 @@ function Index() {
         orderType={orderType}
         setOrderType={setOrderType}
       />
+
+      <WelcomePopup />
     </div>
   );
 }
