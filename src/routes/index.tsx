@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import logo from "@/assets/logo.jpeg";
 import heroFood from "@/assets/hero-food.jpg";
 
@@ -178,35 +179,104 @@ function Nav({ cartCount, onOpenOrder }: { cartCount: number; onOpenOrder: () =>
 }
 
 function Hero({ onOrder }: { onOrder: () => void }) {
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 600], [0, 120]);
+  const heroScale = useTransform(scrollY, [0, 600], [1, 1.08]);
+  const textY = useTransform(scrollY, [0, 600], [0, -60]);
+
+  const letters = "Done Right.".split("");
+
   return (
     <section id="top" className="relative overflow-hidden border-b border-border/60">
-      <div
+      <motion.div
         className="absolute inset-0 opacity-30"
         style={{ background: "radial-gradient(60% 60% at 70% 30%, oklch(0.58 0.11 142 / 0.25), transparent 70%)" }}
+        animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.4, 0.25] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
       <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-16 md:grid-cols-[1.05fr_1fr] md:gap-16 md:py-28">
-        <div className="flex flex-col justify-center">
-          <span className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-leaf" /> Fast-Casual Deli
-          </span>
+        <motion.div className="flex flex-col justify-center" style={{ y: textY }}>
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <motion.span
+              className="h-1.5 w-1.5 rounded-full bg-leaf"
+              animate={{ scale: [1, 1.6, 1], opacity: [1, 0.5, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+            />
+            Fast-Casual Deli · Jerusalem
+          </motion.span>
           <h1 className="font-display text-5xl leading-[0.95] text-foreground md:text-7xl">
-            Fresh.<br />Simple.<br />
-            <span className="font-script text-6xl text-leaf md:text-8xl">Done Right.</span>
+            {["Fresh.", "Simple."].map((word, i) => (
+              <motion.span
+                key={word}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 + i * 0.15 }}
+                className="block"
+              >
+                {word}
+              </motion.span>
+            ))}
+            <span className="block font-script text-6xl text-leaf md:text-8xl">
+              {letters.map((ch, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 30, rotate: -8 }}
+                  animate={{ opacity: 1, y: 0, rotate: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + i * 0.05, type: "spring" }}
+                  className="inline-block"
+                >
+                  {ch === " " ? "\u00A0" : ch}
+                </motion.span>
+              ))}
+            </span>
           </h1>
-          <p className="mt-6 max-w-md text-base text-muted-foreground md:text-lg">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
+            className="mt-6 max-w-md text-base text-muted-foreground md:text-lg"
+          >
             Sandwiches, schnitzel, grilled chicken and burgers — made to order. Delivery, pickup or dine in.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#menu" className="rounded-full bg-cream px-6 py-3 text-sm font-semibold text-background transition hover:bg-cream/90">
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.3, duration: 0.5 }}
+            className="mt-8 flex flex-wrap gap-3"
+          >
+            <motion.a
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              href="#menu"
+              className="rounded-full bg-cream px-6 py-3 text-sm font-semibold text-background"
+            >
               View Menu
-            </a>
-            <button onClick={onOrder} className="rounded-full border border-leaf px-6 py-3 text-sm font-semibold text-leaf transition hover:bg-leaf hover:text-primary-foreground">
+            </motion.a>
+            <motion.button
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={onOrder}
+              className="rounded-full border border-leaf px-6 py-3 text-sm font-semibold text-leaf transition hover:bg-leaf hover:text-primary-foreground"
+            >
               Order Online
-            </button>
-          </div>
-        </div>
-        <div className="relative">
-          <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/60 ring-1 ring-border">
+            </motion.button>
+          </motion.div>
+        </motion.div>
+        <motion.div
+          className="relative"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+        >
+          <motion.div
+            style={{ y: heroY, scale: heroScale }}
+            className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/60 ring-1 ring-border"
+          >
             <img
               src={heroFood}
               alt="Flame-grilled chicken on slate"
@@ -214,12 +284,18 @@ function Hero({ onOrder }: { onOrder: () => void }) {
               height={1280}
               className="h-full w-full object-cover"
             />
-          </div>
-          <div className="absolute -bottom-5 -left-5 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block">
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -20, y: 20 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
+            whileHover={{ y: -4, rotate: -2 }}
+            className="absolute -bottom-5 -left-5 hidden rounded-xl border border-border bg-card px-4 py-3 shadow-lg md:block"
+          >
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Today</p>
             <p className="font-display text-lg text-foreground">Flame-Grilled Chicken</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
@@ -243,32 +319,44 @@ function CategoryStrip() {
   );
 }
 
-function MenuCard({ item, onAdd }: { item: MenuItem; onAdd: () => void }) {
+function MenuCard({ item, onAdd, index }: { item: MenuItem; onAdd: () => void; index: number }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-leaf/60 hover:shadow-lg hover:shadow-black/40">
+    <motion.article
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5, delay: (index % 8) * 0.05, ease: "easeOut" }}
+      whileHover={{ y: -6 }}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-leaf/60 hover:shadow-xl hover:shadow-black/50"
+    >
       <div className="relative aspect-square overflow-hidden bg-muted">
-        <img
+        <motion.img
           src={item.img}
           alt={item.name}
           loading="lazy"
           width={800}
           height={800}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover"
+          whileHover={{ scale: 1.12, rotate: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/80 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-baseline justify-between gap-3">
           <h3 className="font-display text-lg leading-tight text-foreground">{item.name}</h3>
           <span className="shrink-0 font-display text-base tabular-nums text-leaf">₪{item.price}</span>
         </div>
-        <button
+        <motion.button
           onClick={onAdd}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.95 }}
           className="mt-auto inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-background py-2 text-xs font-semibold uppercase tracking-wider text-foreground transition hover:border-leaf hover:bg-leaf hover:text-primary-foreground"
         >
           + Add
-        </button>
+        </motion.button>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -276,17 +364,23 @@ function MenuSection({ section, onAdd }: { section: Section; onAdd: (item: MenuI
   return (
     <section id={section.id} className="scroll-mt-32 border-b border-border/60 py-16 md:py-20">
       <div className="mx-auto max-w-6xl px-5">
-        <header className="mb-10 text-center">
+        <motion.header
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="mb-10 text-center"
+        >
           <p className="font-hebrew text-sm text-leaf" dir="rtl">{section.he}</p>
           <h2 className="mt-1 font-display text-4xl text-foreground md:text-5xl">{section.title}</h2>
           <div className="mt-4 text-[11px] uppercase tracking-[0.25em] text-muted-foreground leaf-divider">
             {section.items.length} items
           </div>
           {section.note && <p className="mt-4 text-sm text-muted-foreground">{section.note}</p>}
-        </header>
+        </motion.header>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
-          {section.items.map((item) => (
-            <MenuCard key={item.id} item={item} onAdd={() => onAdd(item)} />
+          {section.items.map((item, i) => (
+            <MenuCard key={item.id} item={item} onAdd={() => onAdd(item)} index={i} />
           ))}
         </div>
       </div>
@@ -295,26 +389,113 @@ function MenuSection({ section, onAdd }: { section: Section; onAdd: (item: MenuI
 }
 
 function Visit() {
+  const hours = [
+    { day: "Sunday", time: "5:30 am – 12:00 am" },
+    { day: "Monday", time: "5:30 am – 12:00 am" },
+    { day: "Tuesday", time: "5:30 am – 12:00 am" },
+    { day: "Wednesday", time: "5:30 am – 12:00 am" },
+    { day: "Thursday", time: "11:30 am – 4:00 am" },
+    { day: "Friday", time: "Closed" },
+    { day: "Saturday", time: "Closed" },
+  ];
+  const todayIdx = new Date().getDay();
+
   return (
-    <section id="visit" className="border-b border-border/60 bg-card py-20">
-      <div className="mx-auto grid max-w-6xl gap-12 px-5 md:grid-cols-3">
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Hours</p>
-          <ul className="mt-4 space-y-1 text-foreground/90">
-            <li className="flex justify-between"><span>Sun – Thu</span><span className="tabular-nums">11:00 — 22:00</span></li>
-            <li className="flex justify-between"><span>Friday</span><span className="tabular-nums">10:00 — 15:00</span></li>
-            <li className="flex justify-between"><span>Saturday</span><span>Closed</span></li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Visit</p>
-          <p className="mt-4 font-display text-2xl text-foreground">123 Main Street</p>
-          <p className="text-muted-foreground">Tel Aviv, Israel</p>
-        </div>
-        <div>
-          <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Contact</p>
-          <p className="mt-4 text-foreground/90">+972 03 000 0000</p>
-          <p className="text-muted-foreground">hello@leiladeli.com</p>
+    <section id="visit" className="relative overflow-hidden border-b border-border/60 bg-card py-20">
+      <motion.div
+        className="absolute -right-32 top-0 h-96 w-96 rounded-full bg-leaf/10 blur-3xl"
+        animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <div className="relative mx-auto max-w-6xl px-5">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-12 text-center"
+        >
+          <p className="font-hebrew text-sm text-leaf" dir="rtl">בקרו אותנו</p>
+          <h2 className="mt-1 font-display text-4xl text-foreground md:text-5xl">Visit Leila Deli</h2>
+        </motion.div>
+
+        <div className="grid gap-8 md:grid-cols-[1.1fr_1fr]">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="overflow-hidden rounded-2xl border border-border shadow-2xl shadow-black/40"
+          >
+            <iframe
+              title="Leila Deli location"
+              src="https://www.google.com/maps?q=Eli+ha-Cohen+St+15,+Jerusalem&output=embed"
+              className="h-[420px] w-full"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="flex flex-col gap-8"
+          >
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Address</p>
+              <p className="mt-3 font-display text-2xl text-foreground">Eli ha-Cohen St 15</p>
+              <p className="text-muted-foreground">Jerusalem, Israel</p>
+              <motion.a
+                whileHover={{ x: 4 }}
+                href="https://www.google.com/maps/dir/?api=1&destination=Eli+ha-Cohen+St+15,+Jerusalem"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-leaf"
+              >
+                Get directions →
+              </motion.a>
+            </div>
+
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Hours</p>
+              <ul className="mt-3 divide-y divide-border/60 text-sm">
+                {hours.map((h, i) => {
+                  const isToday = i === todayIdx;
+                  const closed = h.time === "Closed";
+                  return (
+                    <motion.li
+                      key={h.day}
+                      initial={{ opacity: 0, x: 10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.04 }}
+                      className={`flex items-center justify-between py-2 ${isToday ? "text-foreground" : "text-muted-foreground"}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        {isToday && (
+                          <motion.span
+                            className="h-1.5 w-1.5 rounded-full bg-leaf"
+                            animate={{ scale: [1, 1.8, 1], opacity: [1, 0.4, 1] }}
+                            transition={{ duration: 1.6, repeat: Infinity }}
+                          />
+                        )}
+                        {h.day}
+                        {isToday && <span className="text-[10px] uppercase tracking-wider text-leaf">Today</span>}
+                      </span>
+                      <span className={`tabular-nums ${closed ? "text-destructive/80" : ""}`}>{h.time}</span>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-leaf">Contact</p>
+              <p className="mt-3 text-foreground/90">hello@leiladeli.com</p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -497,12 +678,27 @@ function Index() {
       <Footer />
 
       {/* Sticky floating order button (mobile-first) */}
-      <button
+      <motion.button
         onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-5 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-leaf px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-xl shadow-black/40 transition hover:scale-[1.02] hover:bg-leaf-deep md:bottom-8"
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 20 }}
+        whileHover={{ scale: 1.06, y: -3 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-5 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-leaf px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-xl shadow-leaf/30 md:bottom-8"
       >
-        {cartCount > 0 ? `View Order · ${cartCount}` : "Order Now"} →
-      </button>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={cartCount}
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {cartCount > 0 ? `View Order · ${cartCount}` : "Order Now"} →
+          </motion.span>
+        </AnimatePresence>
+      </motion.button>
 
       <OrderDrawer
         open={drawerOpen}
