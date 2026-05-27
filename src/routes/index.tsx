@@ -678,12 +678,27 @@ function Index() {
       <Footer />
 
       {/* Sticky floating order button (mobile-first) */}
-      <button
+      <motion.button
         onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-5 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-leaf px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-xl shadow-black/40 transition hover:scale-[1.02] hover:bg-leaf-deep md:bottom-8"
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.4, type: "spring", stiffness: 200, damping: 20 }}
+        whileHover={{ scale: 1.06, y: -3 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-5 left-1/2 z-40 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-leaf px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-xl shadow-leaf/30 md:bottom-8"
       >
-        {cartCount > 0 ? `View Order · ${cartCount}` : "Order Now"} →
-      </button>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={cartCount}
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {cartCount > 0 ? `View Order · ${cartCount}` : "Order Now"} →
+          </motion.span>
+        </AnimatePresence>
+      </motion.button>
 
       <OrderDrawer
         open={drawerOpen}
