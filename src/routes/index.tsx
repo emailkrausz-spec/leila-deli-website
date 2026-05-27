@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { useApp } from "@/lib/app-context";
 import logo from "@/assets/logo.jpeg";
 import heroFood from "@/assets/hero-food.jpg";
 
